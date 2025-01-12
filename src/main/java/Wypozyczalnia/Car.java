@@ -58,4 +58,9 @@ public class Car {
     public String getCarClass() {
         return carClass;
     }
+
+
+    public void changeAvailability() {
+        this.availability = !this.availability;
+    }
 }

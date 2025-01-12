@@ -10,22 +10,22 @@ import static Wypozyczalnia.PdfGenerator.generateCarListPdf;
 public class Main {
     public Main(){}
     private final Connection connection = openDB();
-
     private final List<Car> cars = getCarsFromDatabase(connection);
 
-    private Car wybierzSamochod(String klasa, String skrzynia){
-        Car wybranySamochod = null;
+    public Car wybierzSamochod(String klasa, String skrzynia){
+
         for (Car car : cars) {
-            if(car.isAvaible()&&car.getCarClass().equals(klasa)&&car.getCarClass().equals(skrzynia)){
+            if(car.isAvaible()&&car.getCarClass().equals(klasa)&&car.getTransmission().equals(skrzynia)){
                 System.out.println("Znaleziono samochód");
-                wybranySamochod = car;
-                return wybranySamochod;
+
+                car.changeAvailability();
+                return car;
             }
         }
         throw new WybierzSamochodException("Nie znaleziono samochodu, wybierz inny rodzaj samochodu");
     }
-    public void generateInvoice(){
-        generateCarListPdf("C:\\Users\\wojci\\Desktop\\studia\\3-semestr\\po\\baza_z_pdf\\x.pdf",cars);
+    public void generateInvoice(Car samochod){
+        generateCarListPdf("C:\\Users\\wojci\\Desktop\\studia\\3-semestr\\po\\baza_z_pdf\\x.pdf",samochod);
     }
     public List<Car> getCars(){
         return cars;

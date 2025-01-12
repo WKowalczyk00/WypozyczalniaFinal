@@ -12,7 +12,7 @@ import java.util.List;
 //dodałem caly folder
 public class PdfGenerator {
 
-    public static void generateCarListPdf(String pdfPath, List<Car> cars) {
+    public static void generateCarListPdf(String pdfPath, Car car) {
         try {
             // Tworzenie PDF
             PdfWriter writer = new PdfWriter(new FileOutputStream(pdfPath));
@@ -21,11 +21,9 @@ public class PdfGenerator {
 
             // Dodanie tytułu
             document.add(new Paragraph("Lista samochodów").setBold().setFontSize(16));
-            System.out.println(cars.size());
-            // Dodanie każdego samochodu
-            for (Car car : cars) {
-                document.add(new Paragraph(car.toString()));
-            }
+
+            document.add(new Paragraph(car.toString()));
+
 
             // Zamknięcie dokumentu
             document.close();

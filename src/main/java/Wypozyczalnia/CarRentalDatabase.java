@@ -56,6 +56,25 @@ public class CarRentalDatabase {
 
         return carList;
     }
+    public static void updateCarAvailability(Connection connection, int id, boolean newAvailability) {
+        String updateQuery = "UPDATE Cars SET availability = ? WHERE id = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(updateQuery)) {
+            statement.setBoolean(1, newAvailability);
+            statement.setInt(2, id);
+
+            int rowsUpdated = statement.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                System.out.println("Dostępność samochodu o ID: " + id + " została pomyślnie zaktualizowana.");
+            } else {
+                System.out.println("Nie znaleziono samochodu o podanym ID: " + id);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void addNewCar(Connection connection) {
         Scanner scanner = new Scanner(System.in);
 

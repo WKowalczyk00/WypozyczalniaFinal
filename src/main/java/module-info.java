@@ -5,6 +5,7 @@ module com.example.wypozyczalniaprojekt {
 
     requires kernel;
     requires layout;
+    requires io;
 
 
     opens com.example.wypozyczalniaprojekt to javafx.fxml;

@@ -1,6 +1,5 @@
 package Wypozyczalnia;
 
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -16,7 +15,6 @@ public class CarRentalDatabase {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/car_rental";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "zaq1@WSX";
-
 
     public static Connection openDB() {
         try {
@@ -43,10 +41,9 @@ public class CarRentalDatabase {
                 String transmission = resultSet.getString("transmission");
                 String registrationNumber = resultSet.getString("registration_number");
                 int seatCount = resultSet.getInt("seat_count");
-                double rentalPrice = resultSet.getDouble("rental_price");
                 boolean availability = resultSet.getBoolean("availability");
 
-                Car car = new Car(id, model,carClass, transmission, registrationNumber, seatCount, rentalPrice, availability);
+                Car car = new Car(id, model, carClass, transmission, registrationNumber, seatCount, availability);
                 carList.add(car);
             }
 
@@ -56,6 +53,7 @@ public class CarRentalDatabase {
 
         return carList;
     }
+
     public static void updateCarAvailability(Connection connection, int id, boolean newAvailability) {
         String updateQuery = "UPDATE Cars SET availability = ? WHERE id = ?";
 
@@ -96,21 +94,17 @@ public class CarRentalDatabase {
             System.out.print("Podaj liczbę miejsc: ");
             int seatCount = scanner.nextInt();
 
-            System.out.print("Podaj cenę wynajmu: ");
-            double rentalPrice = scanner.nextDouble();
-
             System.out.print("Czy samochód jest dostępny (true/false): ");
             boolean availability = scanner.nextBoolean();
 
-            String insertQuery = "INSERT INTO Cars (model, transmission,class, registration_number, seat_count, rental_price, availability) VALUES (?, ?, ?, ?, ?, ?,?)";
+            String insertQuery = "INSERT INTO Cars (model, transmission, class, registration_number, seat_count, availability) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(insertQuery);
             preparedStatement.setString(1, model);
             preparedStatement.setString(2, transmission);
             preparedStatement.setString(3, carClass);
             preparedStatement.setString(4, registrationNumber);
             preparedStatement.setInt(5, seatCount);
-            preparedStatement.setDouble(6, rentalPrice);
-            preparedStatement.setBoolean(7, availability);
+            preparedStatement.setBoolean(6, availability);
 
             int rowsInserted = preparedStatement.executeUpdate();
 
@@ -125,4 +119,5 @@ public class CarRentalDatabase {
         } finally {
             scanner.close();
         }
-}}
+    }
+}

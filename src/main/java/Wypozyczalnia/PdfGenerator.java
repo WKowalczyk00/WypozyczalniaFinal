@@ -3,14 +3,17 @@ package Wypozyczalnia;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.*;
+import com.itextpdf.layout.property.TextAlignment;
+import com.itextpdf.layout.property.UnitValue;
+//import com.itextpdf.layout.borders.SolidBorder;
+import com.itextpdf.layout.border.Border;
+import com.itextpdf.layout.element.Cell;
 
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
-//trzeba dodac paczke ctrl alt shift s
-//https://github.com/itext/itext-java/releases?expanded=true&page=4&q=7.0.4
-//dodałem caly folder
+
 public class PdfGenerator {
 
     public static void generateCarListPdf(String pdfPath, Car car, String customerName, String rentalPeriod, double totalCost, String driversLicenceNumber) {
@@ -20,30 +23,63 @@ public class PdfGenerator {
             PdfDocument pdfDoc = new PdfDocument(writer);
             Document document = new Document(pdfDoc);
 
-            document.add(new Paragraph("Faktura wynajmu samochodu").setBold().setFontSize(16).setMarginBottom(20));
+            // Nagłówek z nazwą firmy
+            document.add(new Paragraph("Wypozyczalnia Samochodów Oltek")
+                    .setBold()
+                    .setFontSize(18)
+                    .setTextAlignment(TextAlignment.CENTER));
+            document.add(new Paragraph("Faktura wynajmu samochodu")
+                    .setFontSize(14)
+                    .setTextAlignment(TextAlignment.CENTER));
+//            document.add(new LineSeparator(new SolidBorder(1)).setMarginBottom(20));
 
-            // Dodanie szczegółów klienta
+            Date date = new Date();
+            SimpleDateFormat newFormat = new SimpleDateFormat("HH:mm dd MM yyyy");
+            String formattedDate = newFormat.format(date);
+            // Numer faktury i data
+            document.add(new Paragraph("Numer faktury: " + "FV123456").setBold());
+            document.add(new Paragraph("Data wystawienia: " + formattedDate));
+
+            // Dane klienta
             document.add(new Paragraph("Dane klienta:").setBold());
             document.add(new Paragraph("Imię i nazwisko: " + customerName));
-            document.add(new Paragraph("Identyfikujący się prawem jazdy o numerze: " + driversLicenceNumber));
+            document.add(new Paragraph("Prawo jazdy: " + driversLicenceNumber));
+//            document.add(new LineSeparator(new SolidBorder(1)).setMarginBottom(10));
 
-            // Dodanie szczegółów wynajmu
-            document.add(new Paragraph("\nSzczegóły wynajmu:").setBold());
-            document.add(new Paragraph("Okres wynajmu: " + rentalPeriod));
-            document.add(new Paragraph("Data wystawienia faktury: " + new Date().toString()));
+            // Tabela szczegółów wynajmu
+            Table table = new Table(UnitValue.createPercentArray(new float[]{4, 6})).useAllAvailableWidth();
+//            table.addHeaderCell(new Cell().add(new Paragraph("Szczegóły").setBold()).setBackgroundColor(com.itextpdf.kernel.colors.ColorConstants.LIGHT_GRAY));
+//            table.addHeaderCell(new Cell().add(new Paragraph("Dane").setBold()).setBackgroundColor(com.itextpdf.kernel.colors.ColorConstants.LIGHT_GRAY));
 
-            // Szczegóły samochodu
-            document.add(new Paragraph("\nSzczegóły samochodu:").setBold());
-            document.add(new Paragraph(car.toString()));
+            table.addCell("Okres wynajmu:");
+            table.addCell(rentalPeriod);
+            table.addCell("Samochod:");
+            table.addCell(String.format("Model: %s, Klasa: %s, Skrzynia: %s, Rejestracja: %s, Liczba siedzen: %d",
+                    car.getModel(),car.getCarClass(), car.getTransmission(), car.getRegistrationNumber(), car.getSeatCount()));
+            table.addCell("Koszt calkowity:");
+            table.addCell(String.format("%.2f PLN", totalCost));
 
-            // Koszt całkowity
-            document.add(new Paragraph("\nKoszt całkowity: " + String.format("%.2f PLN", totalCost)).setBold());
+            document.add(table.setMarginBottom(20));
 
+            // Podsumowanie
+            document.add(new Paragraph("Koszt calkowity do zaplaty: " + String.format("%.2f PLN", totalCost))
+                    .setBold()
+                    .setFontSize(12)
+                    .setTextAlignment(TextAlignment.RIGHT)
+                    .setMarginTop(20));
 
+            // Stopka
+//            document.add(new LineSeparator(new SolidBorder(1)).setMarginTop(20));
+            document.add(new Paragraph("Dziekujemy za skorzystanie z naszych uslug!")
+                    .setTextAlignment(TextAlignment.CENTER));
+            document.add(new Paragraph("Wypozyczalnia Samochodow Oltek, ul. Sloneczko 123, 30-001 Krakow")
+                    .setTextAlignment(TextAlignment.CENTER));
+            document.add(new Paragraph("Kontakt: +48 123 456 789 | email: kontakt@wypozyczalnia.pl")
+                    .setTextAlignment(TextAlignment.CENTER));
 
             // Zamknięcie dokumentu
             document.close();
-            System.out.println("PDF wygenerowany pomyślnie: " + pdfPath);
+            System.out.println("PDF wygenerowany pomyslnie: " + pdfPath);
 
         } catch (Exception e) {
             e.printStackTrace();

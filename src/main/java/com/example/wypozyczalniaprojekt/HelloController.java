@@ -1,5 +1,7 @@
 package com.example.wypozyczalniaprojekt;
 
+import Wypozyczalnia.Main;
+import Wypozyczalnia.WybierzSamochodException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleGroup;
@@ -45,7 +47,7 @@ public class HelloController {
     private RadioButton automatycznyRadioButton;
 
     private RadioButton paszportRadioButton;
-    private RadioButton dowodRadioButton
+    private RadioButton dowodRadioButton;
 
 
     private ToggleGroup dataGroup;
@@ -77,5 +79,7 @@ public class HelloController {
 
 
 
+
+    }
 
 }

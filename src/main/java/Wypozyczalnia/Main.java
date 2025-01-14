@@ -15,6 +15,7 @@ public class Main {
     private final Connection connection = openDB();
     private final List<Car> cars = getCarsFromDatabase(connection);
     private Car chosenSamochod = null;
+    private int[] cenyKlas = {100,150,200,200,300};
 
     public Car wybierzSamochod(String klasa, String skrzynia){
 
@@ -29,6 +30,9 @@ public class Main {
             }
         }
         throw new WybierzSamochodException("Nie znaleziono samochodu, wybierz inny rodzaj samochodu");
+    }
+    public int[] getCenyKlas() {
+        return cenyKlas;
     }
     public void generateInvoice(Car samochod, String dane_klienta, int ilosc_dni,String np_jazdy){
         try {

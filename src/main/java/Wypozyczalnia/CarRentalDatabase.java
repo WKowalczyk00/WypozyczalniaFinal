@@ -97,52 +97,93 @@ public class CarRentalDatabase {
             e.printStackTrace();
         }
     }
+    public static boolean updateCarAvailabilityByRegNumber(Connection connection, String registrationNumber, boolean newAvailability) {
+        String updateQuery = "UPDATE Cars SET availability = ? WHERE registration_number = ?";
 
-    public static void addNewCar(Connection connection) {
-        Scanner scanner = new Scanner(System.in);
+        try (PreparedStatement statement = connection.prepareStatement(updateQuery)) {
+            statement.setBoolean(1, newAvailability);
+            statement.setString(2, registrationNumber);
+
+            int rowsUpdated = statement.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                System.out.println("Dostępność samochodu o numerze rejestracyjnym: " + registrationNumber + " została pomyślnie zaktualizowana.");
+                return true;
+            } else {
+                System.out.println("Nie znaleziono samochodu o podanym numerze rejestracyjnym: " + registrationNumber);
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+
+
+    public static boolean addNewCar(Connection connection,Car car) {
+//        Scanner scanner = new Scanner(System.in);
 
         try {
             System.out.println("Dodaj nowy samochód do bazy danych:");
 
             System.out.print("Podaj model: ");
-            String model = scanner.nextLine();
+            String model = car.getModel();
+
 
             System.out.print("Podaj klase: ");
-            String carClass = scanner.nextLine();
+            String carClass = car.getCarClass();
 
             System.out.print("Podaj rodzaj skrzyni biegów: ");
-            String transmission = scanner.nextLine();
+            String transmission = car.getTransmission();
 
             System.out.print("Podaj numer rejestracyjny: ");
-            String registrationNumber = scanner.nextLine();
+            String registrationNumber = car.getRegistrationNumber();
 
             System.out.print("Podaj liczbę miejsc: ");
-            int seatCount = scanner.nextInt();
+            int seatCount = car.getSeatCount();
 
             System.out.print("Czy samochód jest dostępny (true/false): ");
-            boolean availability = scanner.nextBoolean();
+            boolean availability = car.isAvaible();
 
+            // Sprawdzenie, czy samochód już istnieje
+            String checkQuery = "SELECT COUNT(*) FROM Cars WHERE registration_number = ?";
+            PreparedStatement checkStatement = connection.prepareStatement(checkQuery);
+            checkStatement.setString(1, registrationNumber);
+            ResultSet resultSet = checkStatement.executeQuery();
+
+            if (resultSet.next() && resultSet.getInt(1) > 0) {
+                System.out.println("Samochód z tym numerem rejestracyjnym już istnieje.");
+                return false;
+            }
+
+            // Dodanie nowego samochodu
             String insertQuery = "INSERT INTO Cars (model, transmission, class, registration_number, seat_count, availability) VALUES (?, ?, ?, ?, ?, ?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(insertQuery);
-            preparedStatement.setString(1, model);
-            preparedStatement.setString(2, transmission);
-            preparedStatement.setString(3, carClass);
-            preparedStatement.setString(4, registrationNumber);
-            preparedStatement.setInt(5, seatCount);
-            preparedStatement.setBoolean(6, availability);
+            PreparedStatement insertStatement = connection.prepareStatement(insertQuery);
+            insertStatement.setString(1, model);
+            insertStatement.setString(2, transmission);
+            insertStatement.setString(3, carClass);
+            insertStatement.setString(4, registrationNumber);
+            insertStatement.setInt(5, seatCount);
+            insertStatement.setBoolean(6, availability);
 
-            int rowsInserted = preparedStatement.executeUpdate();
+            int rowsInserted = insertStatement.executeUpdate();
 
             if (rowsInserted > 0) {
                 System.out.println("Samochód został pomyślnie dodany do bazy danych.");
+                return true;
             } else {
                 System.out.println("Wystąpił problem podczas dodawania samochodu.");
+                return false;
             }
 
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         } finally {
-            scanner.close();
+//            scanner.close();
         }
     }
+
 }

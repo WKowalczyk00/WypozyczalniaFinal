@@ -14,11 +14,37 @@ import static Wypozyczalnia.PdfGenerator.generateCarListPdf;
 
 public class Main {
     public Main(){}
-    private final Connection connection = openDB();
-    private final List<Car> cars = getCarsFromDatabase(connection);
+    private final static Connection connection = openDB();
+    private final static List<Car> cars = getCarsFromDatabase(connection);
     private final List<Cennik> cennikList = readCennikFromDatabase(connection);
     private Car chosenSamochod = null;
 
+    public static Connection getConnection() {
+        return connection;
+    }
+    public static List<Car> getCars(){
+        return cars;
+    }
+    public static Car findCarByRegistrationNumber(String registrationNumber){
+        for (Car car : cars) {
+            if(car.getRegistrationNumber().equals(registrationNumber)){
+                return car;
+            }
+        }
+        return null;
+    }
+    public static void changeCarInList(Car car) {
+        for (int i = 0; i < cars.size(); i++) {
+            if (cars.get(i).getRegistrationNumber().equals(car.getRegistrationNumber())) {
+                cars.set(i, car);
+                return;
+            }
+        }
+    }
+
+    public static void addCar (Car car){
+        cars.add(car);
+    }
     public Car wybierzSamochod(String klasa, String skrzynia){
 
         for (Car car : cars) {
@@ -105,7 +131,7 @@ public class Main {
 
         return "From "+ formattedDate1 + " to " + formattedDate2;
     }
-    public List<Car> getCars(){
-        return cars;
-    }
+//    public List<Car> getCars(){
+//        return cars;
+//    }
 }

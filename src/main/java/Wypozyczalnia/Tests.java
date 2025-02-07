@@ -9,11 +9,11 @@ import java.util.List;
 public class Tests {
     public static void main(String[] args){
         Main main = new Main();
-        Car chosenSamochod = main.wybierzSamochod("C","Manual");
+        Car chosenSamochod = main.wybierzSamochod("M","Manual");
         int ilosc_dni = 3;
         String dane_klienta = "Fredi Krzemionka";
         String numer_p_jazdy = String.valueOf(293021930);
-        main.generateInvoice(chosenSamochod,dane_klienta,ilosc_dni,numer_p_jazdy);
+        main.generateInvoice(chosenSamochod,dane_klienta,ilosc_dni,numer_p_jazdy,1);
 //        System.out.println(main.getCars().getLast().getModel());
     }
 
@@ -31,7 +31,7 @@ public class Tests {
                 int ilosc_dni = 3;
                 String dane_klienta = "Fredi Krzemionka";
                 String numer_p_jazdy = String.valueOf(293021930);
-                operacje.generateInvoice(chosenSamochod, dane_klienta, ilosc_dni, numer_p_jazdy);
+                operacje.generateInvoice(chosenSamochod, dane_klienta, ilosc_dni, numer_p_jazdy,1);
             }
             else{
                 pokazBlad("Nie udalo sie odebrać płatności");

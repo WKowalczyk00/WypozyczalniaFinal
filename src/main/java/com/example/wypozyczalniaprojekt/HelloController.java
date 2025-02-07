@@ -1,5 +1,8 @@
 package com.example.wypozyczalniaprojekt;
 
+import Wypozyczalnia.Car;
+import Wypozyczalnia.Main;
+import Wypozyczalnia.WybierzSamochodException;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -9,6 +12,8 @@ import javafx.scene.control.TextField;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import org.w3c.dom.Text;
+
+import java.util.Objects;
 
 
 public class HelloController {
@@ -37,7 +42,7 @@ public class HelloController {
     private RadioButton rRadioButton;
 
     @FXML
-    private RadioButton manulanyRadioButton;
+    private RadioButton manualnyRadioButton;
     @FXML
     private RadioButton automatycznyRadioButton;
 
@@ -73,7 +78,10 @@ public class HelloController {
 
     @FXML
     private Button wynajmijButton;
+    @FXML
+    private Button wynajmijButton2;
 
+    private Main communication;
 
     @FXML
     public void initialize() {
@@ -90,53 +98,20 @@ public class HelloController {
         rRadioButton.setToggleGroup(klasaGroup);
 
         silnikGroup = new ToggleGroup();
-        manulanyRadioButton.setToggleGroup(silnikGroup);
+        manualnyRadioButton.setToggleGroup(silnikGroup);
         automatycznyRadioButton.setToggleGroup(silnikGroup);
 
         dokumentGroup = new ToggleGroup();
         paszportRadioButton.setToggleGroup(dokumentGroup);
         dowodRadioButton.setToggleGroup(dokumentGroup);
 
-        onlyNumbers();
 
         wynajmijButton.setOnAction(this::calculatePrice);
+        wynajmijButton2.setOnAction(this::rentCar);
+
+        communication = new Main();
     }
 
-    @FXML
-    public void onlyNumbers() {
-        iloscDniTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*")) { // Akceptuje tylko cyfry
-                Platform.runLater(() ->
-                        iloscDniTextField.setText(newValue.replaceAll("[^\\d]", ""))
-                );
-            }
-        });
-
-        nrKartyTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*")) { // Akceptuje tylko cyfry
-                Platform.runLater(() ->
-                        nrKartyTextField.setText(newValue.replaceAll("[^\\d]", ""))
-                );
-            }
-        });
-
-        nrPrawaTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*")) { // Akceptuje tylko cyfry
-                Platform.runLater(() ->
-                        nrPrawaTextField.setText(newValue.replaceAll("[^\\d]", ""))
-                );
-            }
-        });
-
-        cvcTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*")) { // Akceptuje tylko cyfry
-                Platform.runLater(() ->
-                        cvcTextField.setText(newValue.replaceAll("[^\\d]", ""))
-                );
-            }
-        });
-
-    }
 
     @FXML
     public void calculatePrice(ActionEvent event) {
@@ -154,21 +129,23 @@ public class HelloController {
             // Ustal cenę na podstawie klasy
             double pricePerDay = 0.0;
 
+//            communication.getCennikList().get(0);
+
             switch (carClass) {
                 case "KLASA A":
-                    pricePerDay = 50.0;
+                    pricePerDay = communication.getCennikList().get(0).getPrice();
                     break;
                 case "KLASA B":
-                    pricePerDay = 100.0;
+                    pricePerDay = communication.getCennikList().get(1).getPrice();
                     break;
                 case "KLASA C":
-                    pricePerDay = 200.0;
+                    pricePerDay = communication.getCennikList().get(2).getPrice();
                     break;
                 case "KLASA M":
-                    pricePerDay = 300.0;
+                    pricePerDay = communication.getCennikList().get(3).getPrice();
                     break;
                 case "KLASA R":
-                    pricePerDay = 400.0;
+                    pricePerDay = communication.getCennikList().get(4).getPrice();
                     break;
                 default:
                     cenaTextField.setText("Niwybrano klasy!");
@@ -181,33 +158,98 @@ public class HelloController {
 
             // Wyświetl cenę w TextField
             cenaTextField.setText(String.format("%.2f PLN", totalPrice)); // formatowanie tekstu: % - poczatek ciagu
-            // tekstowego, . - liczba dziesietna, 2 - zaokraglenie do 2 miejsc po przecinku, f - float
+            // tekstowego, . - liczba dziesietna, 2 - zaokraglenie do 2 miejsc po przecin4u, f - float
+
+
         } catch (NumberFormatException e) {
             cenaTextField.setText("Błędne dni!");
         }
+
+
     }
 
+    private void rentCar(ActionEvent event){
+        FormData getInfo = validateForm();
+        if (getInfo == null) {
+            pokazBlad("Dane niepoprawnie wprowadzone, sproboj ponownie po naprawieniu usterki");
+            return;
+        }
+//        communication.generateInvoice();
+        Car chosenSamochod = null;
+        try {
+            chosenSamochod = communication.wybierzSamochod(getInfo.getKlasaAuta(), getInfo.getRodzajSilnika());
+        } catch (WybierzSamochodException e) {
+            // Obsługa wyjątku
+            System.out.println("Przechwycono wyjątek: " + e.getMessage());
+            pokazBlad(e.getMessage());
+        } finally {
+            if(communication.payment()&&chosenSamochod!=null){
+                int start = getInfo.getStartint();
+                int ilosc_dni = getInfo.getIloscDni();
+                String dane_klienta = getInfo.getImie()+" "+ getInfo.getNazwisko();
+                String numer_p_jazdy = String.valueOf(getInfo.getNrPrawaJazdy());
+                if(communication.generateInvoice(chosenSamochod, dane_klienta, ilosc_dni, numer_p_jazdy,start)) {
+                    pokazKomunikat("Pdf zostal wygenerowany poprawnie");
+                    pokazKomunikat("Platnosc zostala pobrana");
+                }
+                }
+            else{
+                pokazBlad("Nie udalo sie pobrac płatności");
+            }
+        }
+    }
+    private void pokazKomunikat(String wiadomosc) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Informacja");
+        alert.setHeaderText(null);
+        alert.setContentText(wiadomosc);
+        alert.showAndWait();
+    }
 
-    private void validateForm() {
+    private void pokazBlad(String wiadomosc) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Błąd");
+        alert.setHeaderText(null);
+        alert.setContentText(wiadomosc);
+        alert.showAndWait();
+    }
+
+    private FormData validateForm() {
         // Walidacja formularza
         boolean isValid = formValidator.validateForm(
                 new TextField[]{imieTextField, nazwiskoTextField, iloscDniTextField, nrPrawaTextField,
-                        dataPrawaTextField, nrKartyTextField, dataWaznosciTextField, cvcTextField, cenaTextField},
+                        dataPrawaTextField,nrKartyTextField,dataWaznosciTextField},
                 // Pola tekstowe
-                new ToggleGroup[]{dataGroup, klasaGroup, dokumentGroup} // Grupy RadioButtonów
+                new ToggleGroup[]{dataGroup, klasaGroup, dokumentGroup,silnikGroup} // Grupy RadioButtonów
         );
 
         if (!isValid) {
-            System.out.println("Formularz niepoprawny! Wypełnij wszystkie pola.");
-            return;
+            return null;
         }
 
         // Pobranie danych z formularza
         FormData formData = collectFormData();
 
+        if (!formData.getdataPrawaJazdy().matches("\\d{7}")) {
+            return null ;      }
+        if(!formData.getNrPrawaJazdy().matches("\\d{11}")){
+            return null ;
+        }
+        if(!formData.getNrKarty().matches("\\d{12}")){
+            return null ;
+        }
+        if(!formData.getDataWaznosci().matches("\\d{4}")){
+            return null ;
+        }
+        if(!formData.getCvc().matches("\\d{3}")){
+            return null ;
+        }
+
         // Wyświetlenie danych w konsoli (lub przekazanie do faktury)
         System.out.println("Zebrane dane:");
         System.out.println(formData);
+
+        return formData;
     }
 
     private FormData collectFormData() {
@@ -215,30 +257,39 @@ public class HelloController {
         String imie = imieTextField.getText();
         String nazwisko = nazwiskoTextField.getText();
         Integer iloscDni = Integer.valueOf(iloscDniTextField.getText());
-        Integer nrPrawa = Integer.valueOf(nrPrawaTextField.getText());
+        String nrPrawa = nrPrawaTextField.getText();
         String dataPrawa = dataPrawaTextField.getText();
+        String nrKarty = nrKartyTextField.getText();
+        String dataWaznosci = dataWaznosciTextField.getText();
+        String cvc = cvcTextField.getText();
 
 
+        String start = ((RadioButton)dataGroup.getSelectedToggle()).getText();
+        int startint;
+        if(Objects.equals(start,"JUTRO")){startint = 1;}
+        else {
+            startint = 0;
+        }
 
         // Pobierz wartość wybraną w grupie RadioBox (klasa samochodu)
         String klasaAuta = ((RadioButton) klasaGroup.getSelectedToggle()).getText();
-        if (klasaAuta == "KLASA A")
-            klasaAuta = "a";
-        else if (klasaAuta == "KLASA B")
-            klasaAuta = "b";
-        else if (klasaAuta == "KLASA C")
-            klasaAuta = "c";
-        else if (klasaAuta == "KLASA M")
-            klasaAuta = "m";
-        else if (klasaAuta == "KLASA R")
-            klasaAuta = "r";
+        if (Objects.equals(klasaAuta, "KLASA A"))
+            klasaAuta = "A";
+        else if (Objects.equals(klasaAuta, "KLASA B"))
+            klasaAuta = "B";
+        else if (Objects.equals(klasaAuta, "KLASA C"))
+            klasaAuta = "C";
+        else if (Objects.equals(klasaAuta, "KLASA M"))
+            klasaAuta = "M";
+        else if (Objects.equals(klasaAuta, "KLASA R"))
+            klasaAuta = "R";
 
         // Pobierz wartość wybraną w grupie RadioBox (rodzaj paliwa)
         String silnikType = ((RadioButton) silnikGroup.getSelectedToggle()).getText();
-        if (silnikType == "SILNIK MANUALNY")
-            silnikType = "manual";
-        else if (silnikType == "SILNIK AUTOMATYCZNY")
-            silnikType = "automatic";
+        if (Objects.equals(silnikType, "SKRZYNIA MANUALNA"))
+            silnikType = "Manual";
+        else if (Objects.equals(silnikType, "SKRZYNIA AUTOMATYCZNA"))
+            silnikType = "Automatic";
 
         //rodzaj dowodu
         String dokumentType = ((RadioButton) dokumentGroup.getSelectedToggle()).getText();
@@ -247,8 +298,12 @@ public class HelloController {
         else if (dokumentType == "PASZPOSRT")
             dokumentType = "passport";
 
+
+
+
+
         // Zwróć dane w postaci obiektu
-        return new FormData(imie, nazwisko, iloscDni, nrPrawa, dataPrawa, klasaAuta, silnikType, dokumentType);
+        return new FormData(imie, nazwisko, iloscDni, nrPrawa, dataPrawa, klasaAuta, silnikType, dokumentType,nrKarty,dataWaznosci,cvc,startint);
     }
 
 

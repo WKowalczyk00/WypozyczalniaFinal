@@ -53,6 +53,31 @@ public class CarRentalDatabase {
 
         return carList;
     }
+    public static List<Cennik> readCennikFromDatabase(Connection connection) {
+        String query = "SELECT * FROM cennik";
+
+        List<Cennik> cennikList = new ArrayList<>();
+
+        try (PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            System.out.println("Model | Cena");
+            System.out.println("---------------");
+
+            while (resultSet.next()) {
+                String model = resultSet.getString("model");
+                double cena = resultSet.getDouble("cena");
+                cennikList.add(new Cennik(model, cena));
+
+                System.out.println("  " + model + "    | " + cena);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return cennikList;
+    }
 
     public static void updateCarAvailability(Connection connection, int id, boolean newAvailability) {
         String updateQuery = "UPDATE Cars SET availability = ? WHERE id = ?";

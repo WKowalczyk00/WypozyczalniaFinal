@@ -1,60 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--
-  Copyright (c) 2015, 2019, Gluon and/or its affiliates.
-  All rights reserved. Use is subject to license terms.
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
 
-  This file is available and licensed under the following license:
-
-  Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions
-  are met:
-
-  - Redistributions of source code must retain the above copyright
-    notice, this list of conditions and the following disclaimer.
-  - Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in
-    the documentation and/or other materials provided with the distribution.
-  - Neither the name of Oracle Corporation nor the names of its
-    contributors may be used to endorse or promote products derived
-    from this software without specific prior written permission.
-
-  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
--->
-
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Accordion?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.SeparatorMenuItem?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.paint.Color?>
-<?import javafx.scene.text.Font?>
-
-<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.wypozyczalniaprojekt.HelloController">
+<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.wypozyczalniaprojekt.HelloController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -127,11 +80,11 @@
                         <RadioButton fx:id="rRadioButton" mnemonicParsing="false" prefHeight="18.0" prefWidth="217.0" text="KLASA R" />
                      </children>
                   </VBox>
-                  <Label layoutX="-1.0" layoutY="358.0" prefHeight="17.0" prefWidth="211.0" text="WYBIERZ RODZAJ SILNIKA" />
+                  <Label layoutX="-1.0" layoutY="358.0" prefHeight="17.0" prefWidth="211.0" text="WYBIERZ RODZAJ SKRZYNI BIEGOW" />
                   <VBox layoutY="375.0" prefHeight="44.0" prefWidth="211.0">
                      <children>
-                        <RadioButton fx:id="manualnyRadioButton" mnemonicParsing="false" prefHeight="18.0" prefWidth="211.0" text="SILNIK MANUALNY" />
-                        <RadioButton fx:id="automatycznyRadioButton" mnemonicParsing="false" prefHeight="18.0" prefWidth="210.0" text="SILNIK AUTOMATYCZNY" />
+                        <RadioButton fx:id="manualnyRadioButton" mnemonicParsing="false" prefHeight="18.0" prefWidth="211.0" text="SKRZYNIA MANUALNA" />
+                        <RadioButton fx:id="automatycznyRadioButton" mnemonicParsing="false" prefHeight="18.0" prefWidth="210.0" text="SKRZYNIA AUTOMATYCZNA" />
                      </children>
                   </VBox>
                </children>
@@ -244,19 +197,21 @@
                         <Font size="10.0" />
                      </font>
                   </Label>
-              <TextField fx:id="cvcTextField" layoutX="1.0" layoutY="248.0" prefHeight="26.0" prefWidth="249.0" />
                   <Label layoutX="115.0" layoutY="274.0" prefHeight="23.0" prefWidth="129.0" text="CVC">
                      <font>
                         <Font size="10.0" />
                      </font>
                   </Label>
                   <TextField fx:id="dataWaznosciTextField" layoutY="297.0" prefHeight="26.0" prefWidth="95.0" />
-                  <TextField layoutX="115.0" layoutY="297.0" prefHeight="26.0" prefWidth="95.0" />
+                  <TextField fx:id="cvcTextField" layoutX="115.0" layoutY="297.0" prefHeight="26.0" prefWidth="95.0" />
                   <Label layoutX="-1.0" layoutY="323.0" prefHeight="20.0" prefWidth="255.0" text="CENA KOŃCOWA" />
                   <TextField fx:id="cenaTextField" layoutX="1.0" layoutY="343.0" prefHeight="26.0" prefWidth="249.0" />
-                  <Button fx:id="wynajmijButton" layoutY="387.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="255.0" text="WYNAJMIJ SAMOCHÓD" />
+                  <Button fx:id="wynajmijButton" layoutY="387.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="255.0" text="OBLICZ CENE" />
+                  <Button fx:id="wynajmijButton2" layoutX="-1.0" layoutY="441.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="255.0" text="WYNAJMIJ SAMOCHÓD" />
+
                   <RadioButton fx:id="dowodRadioButton" layoutX="2.0" layoutY="146.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="249.0" text="DOWÓD OSOBISTY" />
                   <RadioButton fx:id="paszportRadioButton" layoutX="2.0" layoutY="175.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="249.0" text="PASZPORT" />
+
           </children>
         </AnchorPane>
       </items>

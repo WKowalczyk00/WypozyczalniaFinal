@@ -8,6 +8,6 @@ module com.example.wypozyczalniaprojekt {
     requires io;
 
 
-    opens com.example.wypozyczalniaprojekt to javafx.fxml;
-    exports com.example.wypozyczalniaprojekt;
+    opens com.example.wypozyczalniaprojekt.Administrator to javafx.fxml;
+    exports com.example.wypozyczalniaprojekt.Administrator;
 }

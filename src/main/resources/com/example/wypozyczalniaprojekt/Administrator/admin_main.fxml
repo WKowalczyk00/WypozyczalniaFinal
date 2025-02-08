@@ -41,7 +41,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.wypozyczalniaprojekt.Administrator.AdministratorController">
+<?import javafx.scene.control.ScrollPane?>
+<VBox prefHeight="400.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.wypozyczalniaprojekt.Administrator.AdministratorController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -82,9 +83,9 @@
         </Menu>
       </menus>
     </MenuBar>
-    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS" >
       <children>
-            <HBox prefHeight="52.0" prefWidth="640.0">
+            <HBox prefHeight="52.0" prefWidth="1600.0">
                <children>
                   <HBox prefHeight="52.0" prefWidth="222.0" />
                   <HBox prefHeight="100.0" prefWidth="200.0">
@@ -100,7 +101,14 @@
                   <HBox prefHeight="100.0" prefWidth="200.0" />
                </children>
             </HBox>
-            <HBox fx:id="bazaDanychHBox" layoutY="52.0" prefHeight="320.0" prefWidth="640.0" />
+            <HBox layoutY="52.0" prefHeight="600.0">
+              <ScrollPane fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                  <content>
+                      <HBox fx:id="bazaDanychHBox"  prefHeight="320.0" prefWidth="800.0" />
+                  </content>
+              </ScrollPane>
+            </HBox>
+
       </children>
     </AnchorPane>
   </children>

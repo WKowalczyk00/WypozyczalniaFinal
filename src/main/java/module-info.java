@@ -6,6 +6,7 @@ module com.example.wypozyczalniaprojekt {
     requires kernel;
     requires layout;
     requires io;
+    requires java.desktop;
 
 
     opens com.example.wypozyczalniaprojekt.Administrator to javafx.fxml;

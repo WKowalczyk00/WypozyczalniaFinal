@@ -97,6 +97,23 @@ public class CarRentalDatabase {
             e.printStackTrace();
         }
     }
+    public static Integer getCarIdByRegistrationNumber(Connection connection, String registrationNumber) {
+        String query = "SELECT id FROM Cars WHERE registration_number = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, registrationNumber);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getInt("id");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null; // Zwraca null, jeśli samochód nie został znaleziony
+    }
+
     public static boolean updateCarAvailabilityByRegNumber(Connection connection, String registrationNumber, boolean newAvailability) {
         String updateQuery = "UPDATE Cars SET availability = ? WHERE registration_number = ?";
 
@@ -185,5 +202,26 @@ public class CarRentalDatabase {
 //            scanner.close();
         }
     }
+    public static boolean deleteCarById(Connection connection, int id) {
+        String deleteQuery = "DELETE FROM Cars WHERE id = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(deleteQuery)) {
+            statement.setInt(1, id);
+
+            int rowsDeleted = statement.executeUpdate();
+
+            if (rowsDeleted > 0) {
+                System.out.println("Samochód o ID: " + id + " został usunięty.");
+                return true;
+            } else {
+                System.out.println("Nie znaleziono samochodu o ID: " + id);
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
 }

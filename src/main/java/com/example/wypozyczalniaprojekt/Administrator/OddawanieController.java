@@ -89,17 +89,13 @@ public class OddawanieController {
                 return;
         }
 
-//        if(!administratorManager.returnCar(nr_rej,zdjecie)){
-//            pokazBlad(nr_rej+" Nie zostal znaleziony w bazie, bądź jest dostępny do wypozyczenia, sprobuj ponownie");
-//            return;
-//        }
         if(!isAdded){
             pokazBlad("Nie dodano zdjecia");
             return;
         }
 
 
-
+//        AdministratorController.stworzBazeDanych();
         pokazKomunikat("Samochód o numerze rejestracyjnym: "+nr_rej+" został poprawnie oddany :))");
         handlingWindowClosing();
     }

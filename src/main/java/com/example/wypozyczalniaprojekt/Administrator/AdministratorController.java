@@ -109,9 +109,10 @@ public class AdministratorController {
 
             // Tworzenie nowego Stage (okna)
             Stage newWindow = new Stage();
-            newWindow.setTitle("Nowe Okno");
+            newWindow.setTitle("Dodawanie auta");
             newWindow.setScene(scene);
 
+            newWindow.setOnHidden(event -> stworzBazeDanych());
             // Pokazanie nowego okna
             newWindow.show();
         } catch (IOException e) {
@@ -128,9 +129,10 @@ public class AdministratorController {
 
             // Tworzenie nowego Stage (okna)
             Stage newWindow = new Stage();
-            newWindow.setTitle("Nowe Okno");
+            newWindow.setTitle("Oddawanie Auta");
             newWindow.setScene(scene);
 
+            newWindow.setOnHiding(event -> stworzBazeDanych());
             // Pokazanie nowego okna
             newWindow.show();
         } catch (IOException e) {

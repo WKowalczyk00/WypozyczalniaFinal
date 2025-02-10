@@ -97,6 +97,7 @@ public class AdministratorManager {
             return 13;
         }
 
+        chosenSamochod = new Car(chosenSamochod.getId(), chosenSamochod.getModel(), chosenSamochod.getCarClass(), chosenSamochod.getTransmission(), chosenSamochod.getRegistrationNumber(), chosenSamochod.getSeatCount(),true);
 
         changeCarInList(chosenSamochod);
         return 1;
